@@ -107,7 +107,7 @@
 
     //Justin stuff
     var cues = [
-      {qNo: 0, target: 'Above'},
+      {qNo: 0, target: 'Bank'},
     //  {qNo: 1, target: 'Butter'},
     //  {qNo: 2, target: 'Seek'}
     ]
@@ -142,12 +142,16 @@
       stimulus: 'For this round you will be the <strong>listener</strong>'
     };
 
+    var listener = {
+      timeline: [trial_intro_listener]
+    };
+
 
     timeline.push(welcome);
     timeline.push(instructions);
     timeline.push(questionnaire);
     timeline.push(speaker);
-    timeline.push(trial_intro_listener);
+    timeline.push(listener);
 
 
 
