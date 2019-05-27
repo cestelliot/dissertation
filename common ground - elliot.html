@@ -39,13 +39,35 @@
     var options = ["Correct", "Incorrect", "Don't know"];
     var questionnaire = {
       type: 'survey-multi-choice',
-      questions: [{prompt: "I am going to swap roles between speaker and listener", options: options, required: true,} ,
-                  {prompt: "I can provide two-word clues to the listener.", options: options, required: true,} ,
-                  {prompt:  "I can see what the lister guessed", options: options, required: true,},
-                  {prompt: "I will rate the listener's response from 0 to 5", options: options, required: true,},
-                  {prompt: "I can see the speaker's rate of my guess",options: options, required: true,},
-                  {prompt: "I will swap roles after the speaker's rate of the listener's guess",options: options, required: true}],
+      questions: [{prompt: "I am going to swap roles between speaker and listener", options: options, required: true, data:{correct_response: 'Correct'},} ,
+                  {prompt: "I can provide two-word clues to the listener.", options: options, required: true, data:{correct_response: 'Incorrect'},} ,
+                  {prompt:  "If I am the speaker, I can see what the lister guessed", options: options, required: true, data:{correct_response: 'Correct'},},
+                  {prompt: "I will rate the listener's response from 0 to 5", options: options, required: true, data:{correct_response: 'Incorrect'},},
+                  {prompt: "I can see the speaker's rating of my guess",options: options, required: true, data:{correct_response: 'Correct'},},
+                  {prompt: "I will swap roles after the speaker's rate of the listener's guess",options: options, required: true, data:{correct_response: 'Correct'},},],
+                  on_finish: function(data){
+                    data.correct_responses =  "{\"Q0\":\"Correct\",\"Q1\":\"Incorrect\",\"Q2\":\"Correct\",\"Q3\":\"Incorrect\",\"Q4\":\"Correct\",\"Q5\":\"Correct\"}",
+                    data.correct = data.responses == data.correct_responses
+                  },
     };
+
+    var question_wrong = {
+      type: 'html-keyboard-response',
+      stimulus: 'Unfortunately, you got some questions wrong. Press any key to try again.'
+    }
+
+    var if_wrong = {
+      timeline: [question_wrong, questionnaire],
+      conditional_function: function(){
+        var data = jsPsych.data.get().last(1).values()[0];
+        if (data.correct == false){
+          return true;
+        } else {
+          return false;
+        }
+      }
+
+    }
 
     //Justin stuff
     var cues = [
@@ -82,7 +104,8 @@
 
     timeline.push(welcome);
     timeline.push(instructions);
-    //timeline.push(questionnaire);
+    timeline.push(questionnaire);
+    timeline.push(if_wrong);
     timeline.push(cuetarget);
     timeline.push(targetcue);
 
