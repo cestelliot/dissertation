@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Mock-up</title>
+    <script src="jspsych/jspsych.js"></script>
+    <script src="jspsych/plugins/jspsych-html-keyboard-response.js"></script>
+    <script src="jspsych/plugins/jspsych-survey-text.js"></script>
+    <script src="jspsych/plugins/jspsych-survey-multi-choice.js"></script>
+    <link href="jspsych/css/jspsych.css" rel="stylesheet" type="text/css"></link>
+  </head>
+  <body></body>
+  <script>
+
+  /* create timeline */
+  var timeline = [];
+
+  /* welcome message */
+  var welcome = {
+    type: "html-keyboard-response",
+    stimulus: "<p> Matt, Elliot and Paola warmly welcome you to our experiment.</p>" +
+    "<p>Your participation will help us to understand how communication works.</p>"+
+    "<p>If you wish to continue,  press any key to read the instructions.</p>"
+  };
+  timeline.push(welcome);
+
+  /* define instructions trial */
+  var instructions_1 = {
+    type: "html-keyboard-response",
+    stimulus:"<p>You will play a communication game set in pairs where you will have to guess different words.</p>"+
+    "<p> Sometimes you will be the <strong> speaker </strong> and sometimes you will be the <strong>listener.</strong></p>"
+  }
+
+  var instructions_2 = {
+    type: "html-keyboard-response",
+    stimulus:"<p>If you are the <strong> speaker</strong>, you will:</p>"+
+    "<p> 1. Give a one word clue to the listener to guess a word.</p>"+
+    "<p> 2. Rate how accurate the listener's guess was. (Being 0 not all accurate and 10 the correct target).</p>"+
+    "<p> 3. Either if the listener's guess was correct or incorrect, you will swap roles."+
+    "<p> There will be another chance to guess the word</p>"
+  }
+
+  var instructions_3 = {
+    type: "html-keyboard-response",
+    stimulus:"<p>If you are the <strong> listener</strong>, you will:</p>"+
+    "<p> 1.Type the target word you think the speaker is trying to convey. .</p>"+
+    "<p> 2. Wait for the speaker's rate to see if you guessed correctly or not.</p>"+
+    "<p> 3. Either if the listener's guess was correct or incorrect, you will swap roles."+
+    "<p> There will be another chance to guess the word</p>"
+  }
+
+  var instructions_4 = {
+    type: "html-keyboard-response",
+    stimulus:"<p> Press any key to do a quick questionnaire to know if you got the instructions right</p>"
+  };
+
+  var instructions = {
+    timeline: [instructions_1,instructions_2, instructions_3, instructions_4],
+  }
+  timeline.push(instructions);
+
+
+  var quest = ["I am gonna swap rolls between speaker and listener",
+              "I can provide two-word clues to the listener.",
+              "I can see what the lister guessed",
+              "I will rate the listener's response from 0 to 5",
+              "I can see the speaker's rate of my guess",
+              "I will swap roles after the speaker's rate of the listener's guess"];
+
+  var options = ["Correct", "Incorrect", "Don't know"];
+
+  var questionnaire = {
+    type: 'survey-multi-choice',
+    questions: [{prompt: "I am gonna swap rolls between speaker and listener", options: options, required: true,} ,
+                {prompt: "I can provide two-word clues to the listener.", options: options, required: true,} ,
+                {prompt:  "I can see what the lister guessed", options: options, required: true,},
+                {prompt: "I will rate the listener's response from 0 to 5", options: options, required: true,},
+                {prompt: "I can see the speaker's rate of my guess",options: options, required: true,},
+                {prompt: "I will swap roles after the speaker's rate of the listener's guess",options: options, required: true}],
+
+  };
+  timeline.push(questionnaire);
+
+  var trial_instructions = {
+    type: "html-keyboard-response",
+    stimulus: "<p> Now that you have completed the questionnaire,</p>" +
+    "<p>we are gonna do a quick practive to make sure you know how it works.</p>"+
+    "<p>First, you will be the speaker. Press any key to begin.</p>"
+  };
+  timeline.push(trial_instructions);
+
+  var trial_1 = {
+    type: 'survey-text',
+    questions: [{prompt: "You get the word Bank. Type a one word clue for the listener to guess the word Bank"}],
+  }
+
+  var trial_2 = {
+    type: 'survey-text',
+    questions: [{prompt: "The listener has guessed the word Cash. From 0 to 10, how accurate do you think the listener's guess is?"}],
+  }
+
+  var trial_instructions_2 = {
+    type: "html-keyboard-response",
+    stimulus: "<p> Good!</p>"+
+    "<p> Now you will swap roles and be the listener.<p/>"+
+    "<p> Press any key to begin </p>"
+  }
+
+  var trial_3 = {
+    type: 'survey-text',
+    questions: [{prompt: "The speaker has given you the clue Cash. What do you think is the target word?"}],
+  }
+
+  var trial_4 = {
+    type: "html-keyboard-response",
+    stimulus: "<p> The speaker has rated your answer with an 8</p>"+
+    "<p> Don't worry you might have another chance to guess the word. For now there will be another word to guess.<p/>"+
+    "<p> Press any key to start the experiment</p>"+
+    "<p> Have fun!</p>"
+    }
+
+  var trial_procedure = {
+    timeline: [trial_1, trial_2, trial_instructions_2, trial_3, trial_4],
+  }
+  timeline.push(trial_procedure);
+
+
+  var test = {
+    type: 'survey-text',
+    questions: [{prompt: "above"}],
+  };
+  timeline.push(test);
+
+  /* start the experiment */
+      jsPsych.init({
+        default_iti: 500,
+        timeline: timeline,
+        on_finish: function(){
+          jsPsych.data.displayData()
+        }
+      });
+
+  </script>
+</html>

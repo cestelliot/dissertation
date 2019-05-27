@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Common Ground Experiment</title>
+    <script src='jspsych/jspsych.js'></script>
+    <script src='jspsych/plugins/jspsych-html-keyboard-response.js'></script>
+    <script src="jspsych/plugins/jspsych-survey-multi-choice.js"></script>
+    <script src='jspsych/plugins/jspsych-survey-text.js'></script>
+    <script src='jspsych/plugins/jspsych-cue-target.js'></script>
+    <script src="jspsych/plugins/jspsych-external-html.js"></script>
+    <script src='jspsych/libraries/p5.min.js'></script>
+    <script src='jspsych/libraries/p5.dom.min.js'></script>
+    <script src='jspsych/libraries/d3.min.js'></script>
+    <script src='jspsych/libraries/lodash.js'></script>
+    <script src='jspsych/libraries/jquery-3.4.1.js'></script>
+    <link href='jspsych/css/jspsych.css' rel='stylesheet' type='text/css'></link>
+  </head>
+  <body></body>
+  <script>
+
+    var timeline = [];
+    var inputData;
+    var target;
+
+    /*welcome message trial*/
+    var welcome = {
+      type:'html-keyboard-response',
+      stimulus: 'Welcome to the experiment. Press any key to begin.'
+    };
+
+    /*making instructions*/
+    var instructions = {
+      type: 'html-keyboard-response',
+      stimulus: '<p>In this experiment you will be given a prompt word and asked to provide a single English word that will enable another person to guess the prompt word.</p>',
+      post_trial_gap: 1
+    };
+
+    //questionnaire
+    var options = ["Correct", "Incorrect", "Don't know"];
+    var questionnaire = {
+      type: 'survey-multi-choice',
+      questions: [{prompt: "I am going to swap roles between speaker and listener", options: options, required: true,} ,
+                  {prompt: "I can provide two-word clues to the listener.", options: options, required: true,} ,
+                  {prompt:  "I can see what the lister guessed", options: options, required: true,},
+                  {prompt: "I will rate the listener's response from 0 to 5", options: options, required: true,},
+                  {prompt: "I can see the speaker's rate of my guess",options: options, required: true,},
+                  {prompt: "I will swap roles after the speaker's rate of the listener's guess",options: options, required: true}],
+    };
+
+    //Justin stuff
+    var cues = [
+      {qNo: 0, target: 'Above'},
+    //  {qNo: 1, target: 'Butter'},
+    //  {qNo: 2, target: 'Seek'}
+    ]
+
+    var cueshuffle = jsPsych.randomization.repeat(cues, 1)
+
+    var response
+    var qNo
+
+    var cuetarget = {
+      type: 'cue-target',
+      timeline: cueshuffle,
+      post_trial_gap: 600,
+      on_finish: function(data){
+        
+        response = jsPsych.data.get(data).select('response')
+        qNo = jsPsych.data.getLastTrialData().select('qNo')
+      }
+    };
+
+
+    var targetcue = {
+      type: 'cue-target',
+      target: response,
+      qNo: qNo,
+      on_finish: function(){
+        console.log(jsPsych.data.getDataByTimelineNode(0.0-2.0-0.0).json)
+      }
+    };
+
+    timeline.push(welcome);
+    timeline.push(instructions);
+    //timeline.push(questionnaire);
+    timeline.push(cuetarget);
+    timeline.push(targetcue);
+
+
+    /*start Experiment*/
+    jsPsych.init({
+        default_iti: 500,
+        timeline: timeline,
+        exclusions: {
+          min_width: 800,
+          min_height: 600
+        },
+        // show_progress_bar: true,
+        // auto_update_progress_bar: false,
+        on_finish: function(){
+          jsPsych.data.displayData();
+        }
+    });
+
+  </script>
+</html>
