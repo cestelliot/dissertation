@@ -18,6 +18,7 @@
   <body></body>
   <script>
 
+//testteststettsts
     var timeline = [];
     var inputData;
     var target;
@@ -64,7 +65,7 @@
       timeline: cueshuffle,
       post_trial_gap: 600,
       on_finish: function(data){
-        
+
         response = jsPsych.data.get(data).select('response')
         qNo = jsPsych.data.getLastTrialData().select('qNo')
       }
