@@ -8,6 +8,7 @@
     <script src='jspsych/plugins/jspsych-survey-text.js'></script>
     <script src='jspsych/plugins/jspsych-cue-target.js'></script>
     <script src="jspsych/plugins/jspsych-external-html.js"></script>
+    <script src='jspsych/plugins/jspsych-survey-likert.js'></script>
     <script src='jspsych/libraries/p5.min.js'></script>
     <script src='jspsych/libraries/p5.dom.js'></script>
     <script src='jspsych/libraries/d3.min.js'></script>
@@ -78,36 +79,27 @@
 
     var cueshuffle = jsPsych.randomization.repeat(cues, 1)
 
-    var response
-    var qNo
-
     var cuetarget = {
       type: 'cue-target',
       timeline: cueshuffle,
       post_trial_gap: 600,
-      on_finish: function(data){
-
-        response = jsPsych.data.get(data).select('response')
-        qNo = jsPsych.data.getLastTrialData().select('qNo')
-      }
     };
 
+    var how_good = ['1', '2', '3', '4', '5']
 
-    var targetcue = {
-      type: 'cue-target',
-      target: response,
-      qNo: qNo,
-      on_finish: function(){
-        console.log(jsPsych.data.getDataByTimelineNode(0.0-2.0-0.0).json)
-      }
+    var rater = {
+      type: 'survey-likert',
+      questions: [{prompt: 'The target was blah and your partner said bloo. How close is this?', labels: how_good}],
     };
+
 
     timeline.push(welcome);
     timeline.push(instructions);
-    timeline.push(questionnaire);
-    timeline.push(if_wrong);
+    //timeline.push(questionnaire);
+    //timeline.push(if_wrong);
     timeline.push(cuetarget);
-    timeline.push(targetcue);
+    timeline.push(rater);
+
 
 
     /*start Experiment*/
