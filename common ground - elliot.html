@@ -20,6 +20,10 @@
   <script>
 
     var timeline = [];
+    var speaker_target;
+    var speaker_clue;
+    var speaker_rating;
+    var listener_guess;
 
     /*welcome message trial*/
     var welcome = {
@@ -118,6 +122,10 @@
       type: 'cue-target',
       timeline: cueshuffle,
       post_trial_gap: 600,
+      on_finish: function(data){
+        speaker_target = data.target
+        speaker_clue = data.response
+      }
     };
 
     var waitplease = {
@@ -125,11 +133,17 @@
       stimulus: 'Your partner is making their guess, please wait.'
     };
 
-    var how_good = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10']
+    var how_good = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10'];
 
     var rater = {
       type: 'survey-likert',
-      questions: [{prompt: 'The target was blah and your partner said bloo. How close is this?', labels: how_good}],
+      questions: function(){
+        return[{prompt: 'The target was '+speaker_target+ ' and your partner said money. How close is this?',
+      labels: how_good, required: true}]
+    },
+      on_finish: function(data){
+        speaker_rating = data.responses
+      }
     };
 
     var speaker = {
@@ -150,9 +164,12 @@
     var target_cue = {
       type: 'cue-target',
       preamble: 'Your partner sent you this clue. What do you think the original target was?',
-      target: 'Money',
+      target: 'Drink',
       qNo: 0,
       post_trial_gap: 600,
+      on_finish: function(data){
+        listener_guess = data.response
+      }
     };
 
     var waitplease3 = {
@@ -162,11 +179,9 @@
 
     var rated = {
       type: 'html-keyboard-response',
-      stimulus:
-      "<p> The speaker has rated your answer with an <b>8</b></p>"+
-      "<p> Don't worry you might have another chance to guess the word. For now there will be another word to guess.<p/>"+
-      "<p> Press any key to start the experiment</p>"+
-      "<p> Have fun!</p>"
+      stimulus: function(){
+        return "You answered " +listener_guess+ " and the speaker rated your answer <b>8</b>"
+      }
     };
 
     var listener = {
@@ -176,7 +191,7 @@
 
     timeline.push(welcome);
     timeline.push(instructions);
-    timeline.push(questionnaire);
+    //timeline.push(questionnaire);
     timeline.push(speaker);
     timeline.push(listener);
 
