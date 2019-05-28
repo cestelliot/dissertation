@@ -80,11 +80,11 @@
 
     var question_wrong = {
       type: 'html-keyboard-response',
-      stimulus: 'Unfortunately, you got some questions wrong. Press any key to try again.'
+      stimulus: 'Unfortunately, you got some questions wrong. Press any key to reread the instructions and try again.'
     };
 
     var if_wrong = {
-      timeline: [question_wrong, questions],
+      timeline: [question_wrong, instructions],
       conditional_function: function(){
         var data = jsPsych.data.get().last(1).values()[0];
         if (data.correct == false){
@@ -114,7 +114,7 @@
 
     var cueshuffle = jsPsych.randomization.repeat(cues, 1)
 
-    var cuetarget = {
+    var cue_target = {
       type: 'cue-target',
       timeline: cueshuffle,
       post_trial_gap: 600,
@@ -133,17 +133,44 @@
     };
 
     var speaker = {
-      timeline: [trial_intro_speaker, cuetarget, waitplease, rater],
+      timeline: [trial_intro_speaker, cue_target, waitplease, rater],
     };
 
     //trial intro receiver
     var trial_intro_listener = {
       type: 'html-keyboard-response',
-      stimulus: 'For this round you will be the <strong>listener</strong>'
+      stimulus: 'Now we are swapping roles. For this round you will be the <strong>listener</strong>'
+    };
+
+    var waitplease2 = {
+      type: 'html-keyboard-response',
+      stimulus: 'Your partner is thinking of a word, please wait.'
+    };
+
+    var target_cue = {
+      type: 'cue-target',
+      preamble: 'Your partner sent you this clue. What do you think the original target was?',
+      target: 'Money',
+      qNo: 0,
+      post_trial_gap: 600,
+    };
+
+    var waitplease3 = {
+      type: 'html-keyboard-response',
+      stimulus: 'Your partner is rating your response, please wait.',
+    };
+
+    var rated = {
+      type: 'html-keyboard-response',
+      stimulus:
+      "<p> The speaker has rated your answer with an <b>8</b></p>"+
+      "<p> Don't worry you might have another chance to guess the word. For now there will be another word to guess.<p/>"+
+      "<p> Press any key to start the experiment</p>"+
+      "<p> Have fun!</p>"
     };
 
     var listener = {
-      timeline: [trial_intro_listener]
+      timeline: [trial_intro_listener, waitplease2, target_cue, waitplease3, rated]
     };
 
 
